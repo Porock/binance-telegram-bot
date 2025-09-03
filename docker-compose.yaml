@@ -2,27 +2,19 @@ version: '3.8'
 
 services:
   bot:
-    # Указываем Portainer'у, что образ нужно собрать, а не скачивать
     build: .
-    # Присваиваем имя собранному образу
     container_name: binance-bot-container
     restart: unless-stopped
     volumes:
-      # Очень важно: сохраняем данные PostgreSQL в томе
-      - postgres_data:/var/lib/postgresql/16/main
-    # Переменные окружения будут добавлены вручную в UI Portainer
+      # !!! ИЗМЕНЕНИЕ ЗДЕСЬ !!!
+      - postgres_data_v2:/var/lib/postgresql/16/main
     environment:
-      # Собираем полную строку подключения для Spring Boot.
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${DB_PORT}/${DB_NAME}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      # Отключаем интеграцию с Azure Key Vault, если она не используется.
       AZURE_KEYVAULT_ENABLED: false
-      # Жестко прописываем DB_HOST
       DB_HOST: localhost
-      # Для остальных переменных задаем пустые значения.
-      # Docker Compose подставит вместо них значения из UI Portainer.
-      DB_PORT:
+      DB_PORT: 5432
       DB_USER:
       DB_PASSWORD:
       DB_NAME:
@@ -35,4 +27,5 @@ services:
       TRADING_BOT_ENABLED:
 
 volumes:
-  postgres_data:
+  # !!! И ИЗМЕНЕНИЕ ЗДЕСЬ !!!
+  postgres_data_v2:
