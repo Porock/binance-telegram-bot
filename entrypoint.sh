@@ -1,4 +1,3 @@
-# d:\Git\binance-bot\binance-telegram-bot-1\entrypoint.sh
 #!/bin/bash
 set -e
 
