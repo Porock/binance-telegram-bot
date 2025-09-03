@@ -6,31 +6,30 @@ set -e
 PGDATA="/var/lib/postgresql/12/main"
 
 # Проверяем, была ли база данных уже инициализирована
-if [ ! -d "$PGDATA/base" ]; then
+# Если папка PGDATA пуста, то запускаем инициализацию
+if [ -z "$(ls -A $PGDATA)" ]; then
     echo "Initializing PostgreSQL database..."
-    
-    # Создаем директорию и назначаем права пользователю postgres
-    mkdir -p $PGDATA
-    chown -R postgres:postgres $PGDATA
 
+    # Меняем владельца папки, чтобы postgres мог в нее писать
+    chown -R postgres:postgres /var/lib/postgresql/12
+    
     # Запускаем initdb от имени пользователя postgres
     su - postgres -c "/usr/lib/postgresql/12/bin/initdb -D $PGDATA"
-
+    
     # Временно запускаем сервер PostgreSQL в фоне для настройки
     su - postgres -c "/usr/lib/postgresql/12/bin/postgres -D $PGDATA &"
-    pid="$!"
-    # Ждем пару секунд, чтобы сервер успел запуститься
+    # Даем немного времени на запуск
     sleep 5
 
     # Создаем пользователя и базу данных, используя переменные окружения
-    psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+    su - postgres -c "psql -v ON_ERROR_STOP=1 <<-EOSQL
         CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';
         CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
-EOSQL
-
+    EOSQL"
+    
     # Останавливаем временный сервер PostgreSQL
-    kill -SIGINT "$pid"
-    wait "$pid"
+    su - postgres -c "/usr/lib/postgresql/12/bin/pg_ctl stop -D $PGDATA"
+
     echo "Database initialization complete."
 else
     echo "PostgreSQL database already initialized."
