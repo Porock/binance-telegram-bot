@@ -24,6 +24,9 @@ services:
       TELEGRAM_ERROR_USERNAME:
       BINANCE_API_SECRET:
       BINANCE_API_KEY:
+      # Новые имена (в соответствии с ошибкой):
+      binance-customer-api-key: ${BINANCE_API_KEY}
+      binance-customer-api-secret: ${BINANCE_API_SECRET}
       TRADING_BOT_ENABLED:
 
 volumes:
