@@ -33,5 +33,6 @@
     # Указываем, что наш скрипт - это ГЛАВНЫЙ ВХОД
     ENTRYPOINT ["/entrypoint.sh"]
     
+    
     # А supervisor - это КОМАНДА ПО УМОЛЧАНИЮ, которая будет передана в entrypoint
     CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
