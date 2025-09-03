@@ -5,7 +5,6 @@ services:
     # Указываем Portainer'у, что образ нужно собрать, а не скачивать
     build: .
     # Присваиваем имя собранному образу
-    image: binance-bot-all-in-one:latest
     container_name: binance-bot-container
     restart: unless-stopped
     volumes:
