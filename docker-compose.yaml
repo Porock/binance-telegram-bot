@@ -15,18 +15,19 @@ services:
     environment:
       # Жестко прописываем DB_HOST
       DB_HOST: localhost
-      # Для остальных переменных оставляем только имена
-      - DB_PORT
-      - DB_USER
-      - DB_PASSWORD
-      - DB_NAME
-      - TELEGRAM_ERROR_TOKEN
-      - TELEGRAM_TOKEN
-      - TELEGRAM_USERNAME
-      - TELEGRAM_ERROR_USERNAME
-      - BINANCE_API_SECRET
-      - BINANCE_API_KEY
-      - TRADING_BOT_ENABLED
+      # Для остальных переменных задаем пустые значения.
+      # Docker Compose подставит вместо них значения из UI Portainer.
+      DB_PORT:
+      DB_USER:
+      DB_PASSWORD:
+      DB_NAME:
+      TELEGRAM_ERROR_TOKEN:
+      TELEGRAM_TOKEN:
+      TELEGRAM_USERNAME:
+      TELEGRAM_ERROR_USERNAME:
+      BINANCE_API_SECRET:
+      BINANCE_API_KEY:
+      TRADING_BOT_ENABLED:
 
 volumes:
   postgres_data:
