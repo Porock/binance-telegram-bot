@@ -25,7 +25,7 @@
     # !!! ИЗМЕНЕНИЯ НИЖЕ !!!
     # Копируем supervisord.conf и НОВЫЙ entrypoint.sh
     COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-    COPY entrypoint.sh /entrypoint.sh # Копируем в корень для простоты
+    COPY entrypoint.sh /entrypoint.sh
     RUN chmod +x /entrypoint.sh
     
     EXPOSE 5432
