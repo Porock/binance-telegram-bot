@@ -25,7 +25,7 @@ if [ ! -f "$INIT_FLAG_FILE" ]; then
     su - postgres -c "/usr/lib/postgresql/16/bin/initdb -D $PGDATA"
     
     # Разрешаем подключение по паролю для localhost
-    echo "host all all 127.0.0.1/32 scram-sha-26" >> "$PGDATA/pg_hba.conf"
+    echo "host all all 127.0.0.1/32 scram-sha-256" >> "$PGDATA/pg_hba.conf"
     
     # Запускаем временный сервер для настройки
     su - postgres -c "/usr/lib/postgresql/16/bin/pg_ctl start -D $PGDATA"
