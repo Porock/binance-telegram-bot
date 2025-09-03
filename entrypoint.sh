@@ -35,7 +35,7 @@ if [ ! -f "$INIT_FLAG_FILE" ]; then
     su - postgres -c "psql -v ON_ERROR_STOP=1 <<-EOSQL
         CREATE USER \"${DB_USER}\" WITH PASSWORD '${DB_PASSWORD}';
         CREATE DATABASE \"${DB_NAME}\" OWNER \"${DB_USER}\";
-    EOSQL"
+EOSQL"
     
     # Останавливаем временный сервер
     su - postgres -c "/usr/lib/postgresql/16/bin/pg_ctl stop -D $PGDATA"
