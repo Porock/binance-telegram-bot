@@ -5,30 +5,27 @@ set -e # Выход при любой ошибке
 PGDATA="/var/lib/postgresql/16/main"
 INIT_FLAG_FILE="$PGDATA/.db_initialized_flag"
 
-# Экспортируем переменные, чтобы они были доступны во всех дочерних процессах (su)
+# Экспортируем переменные для дочерних процессов
 export DB_USER
 export DB_PASSWORD
 export DB_NAME
 
-# Создаем директорию, если ее нет, и всегда устанавливаем правильного владельца
-# Это важно, так как владелец может сброситься при перезапуске
+# Всегда устанавливаем правильного владельца
 mkdir -p "$PGDATA"
 chown -R postgres:postgres /var/lib/postgresql/16
 
-# --- ГЛАВНОЕ ИЗМЕНЕНИЕ: Проверяем наш собственный флаг ---
+# --- ГЛАВНОЕ ИЗМЕНЕНИЕ: НЕ ДОВЕРЯЕМ НИЧЕМУ, ЕСЛИ НЕТ ФЛАГА ---
 if [ ! -f "$INIT_FLAG_FILE" ]; then
-    echo ">>>> Initialization flag not found. Starting database setup..."
+    echo ">>>> Initialization flag not found. Wiping data directory and starting from scratch..."
 
-    # Проверяем, существует ли PG_VERSION. Если нет, то это действительно первый запуск.
-    if [ ! -f "$PGDATA/PG_VERSION" ]; then
-        echo ">>>> PG_VERSION not found. Initializing new database cluster..."
-        su - postgres -c "/usr/lib/postgresql/16/bin/initdb -D $PGDATA"
-    else
-        echo ">>>> PG_VERSION found. Using pre-existing (template) cluster."
-    fi
-
+    # Полностью очищаем каталог от любых шаблонных файлов
+    rm -rf "$PGDATA"/*
+    
+    # Инициализируем АБСОЛЮТНО НОВЫЙ кластер. Это создаст postgresql.conf и все остальное.
+    su - postgres -c "/usr/lib/postgresql/16/bin/initdb -D $PGDATA"
+    
     # Разрешаем подключение по паролю для localhost
-    echo "host all all 127.0.0.1/32 scram-sha-256" >> "$PGDATA/pg_hba.conf"
+    echo "host all all 127.0.0.1/32 scram-sha-26" >> "$PGDATA/pg_hba.conf"
     
     # Запускаем временный сервер для настройки
     su - postgres -c "/usr/lib/postgresql/16/bin/pg_ctl start -D $PGDATA"
@@ -52,6 +49,6 @@ else
     echo ">>>> Initialization flag found. Skipping database setup."
 fi
 
-# В самом конце, запускаем основную команду (supervisord)
+# Запускаем supervisord
 echo ">>>> Starting supervisord..."
 exec "$@"
