@@ -26,13 +26,13 @@
     # Копируем supervisord.conf и НОВЫЙ entrypoint.sh
     COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
     COPY entrypoint.sh /entrypoint.sh
-    RUN chmod +x /entrypoint.sh
+    RUN dos2unix /entrypoint.sh && chmod +x /entrypoint.sh
     
     EXPOSE 5432
     
     # Указываем, что наш скрипт - это ГЛАВНЫЙ ВХОД
     ENTRYPOINT ["/entrypoint.sh"]
     
-    
+
     # А supervisor - это КОМАНДА ПО УМОЛЧАНИЮ, которая будет передана в entrypoint
     CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
