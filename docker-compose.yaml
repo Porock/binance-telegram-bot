@@ -9,11 +9,13 @@ services:
     restart: unless-stopped
     volumes:
       # Очень важно: сохраняем данные PostgreSQL в томе
-      - postgres_data:/var/lib/postgresql/12/main
+      - postgres_data:/var/lib/postgresql/16/main
     # Переменные окружения будут добавлены вручную в UI Portainer
     environment:
       # Собираем полную строку подключения для Spring Boot.
       SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${DB_PORT}/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       # Отключаем интеграцию с Azure Key Vault, если она не используется.
       AZURE_KEYVAULT_ENABLED: false
       # Жестко прописываем DB_HOST
