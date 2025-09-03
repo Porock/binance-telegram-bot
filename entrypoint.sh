@@ -4,6 +4,7 @@ set -e
 
 PGDATA="/var/lib/postgresql/12/main"
 
+
 # Проверяем, пуста ли папка с данными
 if [ -z "$(ls -A $PGDATA)" ]; then
     echo "Initializing PostgreSQL database..."
