@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       # Очень важно: сохраняем данные PostgreSQL в томе
-      - postgres_data:/var/lib/postgresql/14/main
+      - postgres_data:/var/lib/postgresql/12/main
     # Переменные окружения будут добавлены вручную в UI Portainer
     environment:
       # Жестко прописываем DB_HOST
