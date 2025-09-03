@@ -1,4 +1,6 @@
-# --- ЭТАП 1: СБОРКА ПРИЛОЖЕНИЯ С ПОМОЩЬЮ MAVEN ---
+# d:\Git\binance-bot\binance-telegram-bot-1\Dockerfile
+
+# --- ЭТАП 1: СБОРКА ... (остается без изменений) ---
     FROM maven:3-eclipse-temurin-21 AS builder
     WORKDIR /build
     COPY pom.xml .
@@ -9,28 +11,27 @@
     # --- ЭТАП 2: СОЗДАНИЕ ФИНАЛЬНОГО ОБРАЗА ---
     FROM --platform=linux/amd64 eclipse-temurin:21-jdk
     
-    # Устанавливаем PostgreSQL 12 и Supervisor, как в вашем файле
     RUN apt-get update && apt-get install -y --no-install-recommends gnupg lsb-release wget procps && \
         wget -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-archive-keyring.gpg && \
         echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
         apt-get update && \
-        # !!! ИЗМЕНЕНИЕ: Добавили postgresql-client-12 !!!
         apt-get install -y --no-install-recommends supervisor postgresql-12 postgresql-client-12 && \
         rm -rf /var/lib/apt/lists/*
     
-    # Создаем директорию для бота
     WORKDIR /opt/bot
     
-    # Копируем скомпилированный .jar файл из первого этапа сборки ("builder")
     COPY --from=builder /build/target/*.jar ./app.jar
     
-    # Копируем наши файлы конфигурации
+    # !!! ИЗМЕНЕНИЯ НИЖЕ !!!
+    # Копируем supervisord.conf и НОВЫЙ entrypoint.sh
     COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-    COPY start.sh ./start.sh
-    RUN chmod +x ./start.sh
+    COPY entrypoint.sh /entrypoint.sh # Копируем в корень для простоты
+    RUN chmod +x /entrypoint.sh
     
-    # Открываем порт для PostgreSQL
     EXPOSE 5432
     
-    # Запускаем supervisor
-    ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+    # Указываем, что наш скрипт - это ГЛАВНЫЙ ВХОД
+    ENTRYPOINT ["/entrypoint.sh"]
+    
+    # А supervisor - это КОМАНДА ПО УМОЛЧАНИЮ, которая будет передана в entrypoint
+    CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
