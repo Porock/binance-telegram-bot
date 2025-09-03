@@ -26,7 +26,7 @@ services:
       BINANCE_API_KEY:
       # Новые имена (в соответствии с ошибкой):
       binance-customer-api-key: ${BINANCE_API_KEY}
-      binance-customer-api-secret: ${BINANCE_API_SECRET}
+      binance-customer-secret-key: ${BINANCE_API_SECRET}
       TRADING_BOT_ENABLED:
 
 volumes:
