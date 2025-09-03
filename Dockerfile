@@ -16,7 +16,7 @@
         wget -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-archive-keyring.gpg && \
         echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
         apt-get update && \
-        apt-get install -y --no-install-recommends supervisor postgresql-12 postgresql-client-12 && \
+        apt-get install -y --no-install-recommends supervisor postgresql-16 postgresql-client-16 && \
         rm -rf /var/lib/apt/lists/*
     
     WORKDIR /opt/bot

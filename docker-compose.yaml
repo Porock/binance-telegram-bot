@@ -12,6 +12,8 @@ services:
       - postgres_data:/var/lib/postgresql/12/main
     # Переменные окружения будут добавлены вручную в UI Portainer
     environment:
+      # Собираем полную строку подключения для Spring Boot.
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${DB_PORT}/${DB_NAME}
       # Отключаем интеграцию с Azure Key Vault, если она не используется.
       AZURE_KEYVAULT_ENABLED: false
       # Жестко прописываем DB_HOST
